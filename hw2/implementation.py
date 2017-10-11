@@ -26,34 +26,34 @@ def load_data(glove_dict):
 
     arr = []
 
-    for filename in os.listdir("pos"):
-        data = open("pos/" + filename, 'r', encoding="utf-8")
-        data = data.read()
+    directories = ["pos", "neg"]
+    for directory in directories:
+        for filename in os.listdir(directory):
+            data = open(directory + "/" + filename, 'r', encoding="utf-8")
+            data = data.read()
 
-        #PREPROCESSING
-        # convert to lowercase:
-        data = data.lower() # convert to lowercase
-        
-        # remove punctuation:
-        exclude = set("""!@#$%^&*()<>,./\[];"'?-~""")
-        data = ''.join(ch for ch in data if ch not in exclude)
+            #PREPROCESSING
+            # convert to lowercase:
+            data = data.lower() # convert to lowercase
+            
+            # remove punctuation:
+            punctuation = set("""!@#$%^&*()<>,./\[];"'?-~""")
+            data = ''.join(ch for ch in data if ch not in punctuation)
 
-        # strip out unnecessary words:
-        unnecessary_words = []
-        data = ' '.join(word for word in data.split(" ") if word not in unnecessary_words)
+            # strip out unnecessary words:
+            unnecessary_words = []
+            data = ' '.join(word for word in data.split(" ") if word not in unnecessary_words)
 
-        # "vectorize" it:
-        row = []
-        for word in data.split(" "):
-            row.append(glove_dict[word] if word in glove_dict.keys() else 0)
+            # "vectorize" it:
+            row = []
+            for word in data.split(" "):
+                row.append(glove_dict[word] if word in glove_dict.keys() else 0)
 
-        # zero pad:
-        row = np.pad(row, (0, 40), 'constant')
+            # zero pad:
+            row = np.pad(row, (0, 40), 'constant')
 
-        # add only first 40 words
-        arr.append(row[:40])
-
-    # repeat for negative reviews
+            # add only first 40 words
+            arr.append(row[:40])
 
     data = np.array(arr)
 
