@@ -4,6 +4,8 @@ import glob #this will be useful when reading reviews from file
 import os
 import tarfile
 
+from sh import gunzip
+
 
 batch_size = 50
 
@@ -16,7 +18,38 @@ def load_data(glove_dict):
     RETURN: numpy array of data with each row being a review in vectorized
     form"""
 
-    data = []
+    # # unzip our reviews file
+    # try: #unzip if it needs to be unzipped
+    # 	gunzip('/reviews.tar.gz')
+    # except:
+    # 	pass
+
+    # open neg and pos
+
+    arr = []
+
+    for filename in os.listdir("/pos"):
+    	data = open(filename 'r', encoding="utf-8")
+
+    	#PREPROCESSING
+    	# convert to lowercase:
+    	data = data.lower() # convert to lowercase
+    	data = data.replace("")
+    	
+    	# remove punctuation:
+    	exclude = set(string.punctuation)
+    	data = ''.join(ch for ch in data if ch not in exclude)
+
+    	# "vectorize" it:
+
+    	# put the first 40 into arr
+
+    # repeat for negative reviews
+
+    data = np.array(arr)
+
+
+
     return data
 
 
