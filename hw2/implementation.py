@@ -4,8 +4,6 @@ import glob #this will be useful when reading reviews from file
 import os
 import tarfile
 
-from sh import gunzip
-
 
 batch_size = 50
 
@@ -20,29 +18,40 @@ def load_data(glove_dict):
 
     # # unzip our reviews file
     # try: #unzip if it needs to be unzipped
-    # 	gunzip('/reviews.tar.gz')
+    #   gunzip('/reviews.tar.gz')
     # except:
-    # 	pass
+    #   pass
 
     # open neg and pos
 
     arr = []
 
-    for filename in os.listdir("/pos"):
-    	data = open(filename 'r', encoding="utf-8")
+    for filename in os.listdir("pos"):
+        data = open("pos/" + filename, 'r', encoding="utf-8")
+        data = data.read()
 
-    	#PREPROCESSING
-    	# convert to lowercase:
-    	data = data.lower() # convert to lowercase
-    	data = data.replace("")
-    	
-    	# remove punctuation:
-    	exclude = set(string.punctuation)
-    	data = ''.join(ch for ch in data if ch not in exclude)
+        #PREPROCESSING
+        # convert to lowercase:
+        data = data.lower() # convert to lowercase
+        
+        # remove punctuation:
+        exclude = set("""!@#$%^&*()<>,./\[];"'?-~""")
+        data = ''.join(ch for ch in data if ch not in exclude)
 
-    	# "vectorize" it:
+        # strip out unnecessary words:
+        unnecessary_words = []
+        data = ' '.join(word for word in data.split(" ") if word not in unnecessary_words)
 
-    	# put the first 40 into arr
+        # "vectorize" it:
+        row = []
+        for word in data.split(" "):
+            row.append(glove_dict[word] if word in glove_dict.keys() else 0)
+
+        # zero pad:
+        row = np.pad(row, (0, 40), 'constant')
+
+        # add only first 40 words
+        arr.append(row[:40])
 
     # repeat for negative reviews
 
