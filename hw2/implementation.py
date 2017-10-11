@@ -57,7 +57,7 @@ def load_data(glove_dict):
 
     data = np.array(arr)
 
-
+    print (data)
 
     return data
 
